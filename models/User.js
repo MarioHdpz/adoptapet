@@ -1,20 +1,16 @@
 /* User model definition */
 
-class User {
-    constructor(
-        id,
-        username,
-        name,
-        lastname,
-        email
-    ) {
-        this.id = id;
-        this.username = username;
-        this.name = name;
-        this.lastname = lastname;
-        this.email = email;
-        this.complete_name = name + ' ' + lastname;
-    }
-}
+const mongoose  = require('mongoose');
+
+const UserSchema = new mongoose.Schema({
+    email: String,
+    firstname: String,
+    lastname: String,
+    address: String,
+    phone: String,
+    isAdopted: Boolean
+});
+
+const User = mongoose.model("user", UserSchema);
 
 module.exports = User;

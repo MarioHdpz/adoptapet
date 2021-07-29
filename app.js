@@ -2,6 +2,7 @@
 
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const router = require("./routes");
 
@@ -12,6 +13,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const password = process.env.PASS;
+
+mongoose.connect(
+    `mongodb+srv://mario:${password}@cluster0.5zlzy.mongodb.net/adoptapet?retryWrites=true`,
+    { useUnifiedTopology: true, useNewUrlParser: true }
+);
 
 app.use("/v1", router);
 
