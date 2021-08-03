@@ -2,6 +2,14 @@
 
 const mongoose  = require('mongoose');
 
+const AddressSchema = new mongoose.Schema({
+    street: {
+        type: String,
+        required: true
+    },
+    number: Number
+});
+
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -9,7 +17,7 @@ const UserSchema = new mongoose.Schema({
     },
     firstname: String,
     lastname: String,
-    address: String,
+    address: AddressSchema,
     phone: String,
     isAdopting: Boolean
 });
