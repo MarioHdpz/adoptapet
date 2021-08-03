@@ -3,13 +3,22 @@
 const mongoose  = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    email: String,
+    email: {
+        type: String,
+        required: true
+    },
     firstname: String,
     lastname: String,
     address: String,
     phone: String,
-    isAdopted: Boolean
+    isAdopting: Boolean
 });
+
+UserSchema.path("email").validate(function (value) {
+    return this.model("user").count({ email: value }).then(function(count) {
+        return count < 1;
+    });
+}, "Email is already registered!");
 
 const User = mongoose.model("user", UserSchema);
 

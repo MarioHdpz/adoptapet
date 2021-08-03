@@ -1,29 +1,46 @@
 /* Pets controller */
 
 const Pet = require('../models/Pet');
-
-const pet1  = new Pet('dog', 'Firulais', false, 'CDMX', 3)
-const pet2  = new Pet('cat', 'Mishi', false, 'CDMX', 3)
-
-const petsDatabase = [ pet1, pet2 ]
+const ObjectId = require('mongoose').Types.ObjectId;
 
 function getPets(req, res) {
-    res.send(petsDatabase)
+    const filters = {}
+    if (req.query.adopted) {
+        filters.adopted = req.query.adopted === "1";
+    }
+    if (req.query.kind) {
+        filters.kind = req.query.kind;
+    }
+    Pet.find(filters).then(function (pets) {
+        res.send(pets)
+    });
 }
 
-function getPet(req, res) {
-    const pet = petsDatabase.filter(pet => pet.name === req.params.name);
-    res.send(pet.pop())
+function createPet(req, res) {
+    const body = req.body;
+    const pet = new Pet(body);
+    Pet.create(pet).then(function (pet) {
+        res.status(201).send(pet)
+    })
+    .catch(function (error) {
+        res.status(400).send({"message": error.message, "type": error.name});
+    });;
 }
 
-function getPetsByKind(req, res) {
-    const kind = req.params.kind;
-    const filteredPets = petsDatabase.filter(pet => pet.kind === kind);
-    res.send(filteredPets);
-}
+function updatePet(request, response) {
+    const id = request.params.id;
+    const body = request.body;
+    Pet.findOneAndUpdate({"_id": ObjectId(id)}, body)
+    .then(function (pet) {
+        response.status(200).send(pet);
+    })
+    .catch(function (error) {
+        response.status(400).send({"message": error.message, "type": error.name});
+    });
+};
 
 module.exports = {
-    getPets,
-    getPetsByKind,
-    getPet
+    createPet,
+    updatePet,
+    getPets
 }
